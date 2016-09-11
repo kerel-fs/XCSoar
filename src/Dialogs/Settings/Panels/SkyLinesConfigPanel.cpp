@@ -29,7 +29,7 @@ Copyright_License {
 #include "Form/DataField/Boolean.hpp"
 #include "Form/DataField/Listener.hpp"
 #include "Language/Language.hpp"
-#include "Tracking/TrackingSettings.hpp"
+#include "Tracking/SkyLines/Settings.hpp"
 #include "Net/State.hpp"
 #include "Form/DataField/Base.hpp"
 #include "Widget/RowFormWidget.hpp"
@@ -119,34 +119,34 @@ static constexpr StaticEnumChoice tracking_intervals[] = {
 void
 SkyLinesConfigPanel::Prepare(ContainerWindow &parent, const PixelRect &rc)
 {
-  const TrackingSettings &settings =
-    CommonInterface::GetComputerSettings().tracking;
+  const SkyLinesTracking::Settings &settings =
+    CommonInterface::GetComputerSettings().tracking.skylines;
 
   RowFormWidget::Prepare(parent, rc);
 
-  AddBoolean(_T("SkyLines"), nullptr, settings.skylines.enabled, this);
+  AddBoolean(_T("SkyLines"), nullptr, settings.enabled, this);
 #ifdef HAVE_NET_STATE_ROAMING
-  AddBoolean(_T("Roaming"), nullptr, settings.skylines.roaming, this);
+  AddBoolean(_T("Roaming"), nullptr, settings.roaming, this);
 #endif
   AddEnum(_("Tracking Interval"), nullptr, tracking_intervals,
-          settings.skylines.interval);
+          settings.interval);
 
   AddBoolean(_("Track friends"),
              _("Download the position of your friends live from the SkyLines server."),
-             settings.skylines.traffic_enabled, this);
+             settings.traffic_enabled, this);
 
   AddBoolean(_("Show nearby traffic"),
              _("Download the position of your nearby traffic live from the SkyLines server."),
-             settings.skylines.near_traffic_enabled, this);
+             settings.near_traffic_enabled, this);
 
   StaticString<64> buffer;
-  if (settings.skylines.key != 0)
-    buffer.UnsafeFormat(_T("%llX"), (unsigned long long)settings.skylines.key);
+  if (settings.key != 0)
+    buffer.UnsafeFormat(_T("%llX"), (unsigned long long)settings.key);
   else
     buffer.clear();
   AddText(_T("Key"), nullptr, buffer);
 
-  SetSkyLinesEnabled(settings.skylines.enabled);
+  SetSkyLinesEnabled(settings.enabled);
 }
 
 static bool
@@ -168,28 +168,28 @@ SkyLinesConfigPanel::Save(bool &_changed)
 {
   bool changed = false;
 
-  TrackingSettings &settings =
-    CommonInterface::SetComputerSettings().tracking;
+  SkyLinesTracking::Settings &settings =
+    CommonInterface::SetComputerSettings().tracking.skylines;
 
   changed |= SaveValue(SL_ENABLED, ProfileKeys::SkyLinesTrackingEnabled,
-                       settings.skylines.enabled);
+                       settings.enabled);
 
 #ifdef HAVE_NET_STATE_ROAMING
   changed |= SaveValue(SL_ROAMING, ProfileKeys::SkyLinesRoaming,
-                       settings.skylines.roaming);
+                       settings.roaming);
 #endif
 
   changed |= SaveValue(SL_INTERVAL, ProfileKeys::SkyLinesTrackingInterval,
-                       settings.skylines.interval);
+                       settings.interval);
 
   changed |= SaveValue(SL_TRAFFIC_ENABLED, ProfileKeys::SkyLinesTrafficEnabled,
-                       settings.skylines.traffic_enabled);
+                       settings.traffic_enabled);
   changed |= SaveValue(SL_NEAR_TRAFFIC_ENABLED,
                        ProfileKeys::SkyLinesNearTrafficEnabled,
-                       settings.skylines.near_traffic_enabled);
+                       settings.near_traffic_enabled);
 
   changed |= SaveKey(*this, SL_KEY, ProfileKeys::SkyLinesTrackingKey,
-                     settings.skylines.key);
+                     settings.key);
 
   _changed |= changed;
 

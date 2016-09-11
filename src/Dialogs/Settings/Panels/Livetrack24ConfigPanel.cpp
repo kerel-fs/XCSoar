@@ -29,7 +29,7 @@ Copyright_License {
 #include "Form/DataField/Boolean.hpp"
 #include "Form/DataField/Listener.hpp"
 #include "Language/Language.hpp"
-#include "Tracking/TrackingSettings.hpp"
+#include "Tracking/LiveTrack24/Settings.hpp"
 #include "Form/DataField/Base.hpp"
 #include "Widget/RowFormWidget.hpp"
 #include "Screen/Layout.hpp"
@@ -108,8 +108,8 @@ static constexpr StaticEnumChoice vehicle_type_list[] = {
 void
 Livetrack24ConfigPanel::Prepare(ContainerWindow &parent, const PixelRect &rc)
 {
-  const TrackingSettings &settings =
-    CommonInterface::GetComputerSettings().tracking;
+  const LiveTrack24::Settings &settings =
+    CommonInterface::GetComputerSettings().tracking.livetrack24;
 
   RowFormWidget::Prepare(parent, rc);
 
@@ -117,23 +117,23 @@ Livetrack24ConfigPanel::Prepare(ContainerWindow &parent, const PixelRect &rc)
   AddSpacer();
 #endif
 
-  AddBoolean(_T("LiveTrack24"),  _T(""), settings.livetrack24.enabled, this);
+  AddBoolean(_T("LiveTrack24"),  _T(""), settings.enabled, this);
 
-  AddTime(_("Tracking Interval"), _T(""), 5, 3600, 5, settings.livetrack24.interval);
+  AddTime(_("Tracking Interval"), _T(""), 5, 3600, 5, settings.interval);
 
   AddEnum(_("Vehicle Type"), _("Type of vehicle used."), vehicle_type_list,
-          (unsigned) settings.livetrack24.vehicleType);
+          (unsigned) settings.vehicleType);
   AddText(_("Vehicle Name"), _T("Name of vehicle used."),
-          settings.livetrack24.vehicle_name);
+          settings.vehicle_name);
 
   WndProperty *edit = AddEnum(_("Server"), _T(""), server_list, 0);
-  ((DataFieldEnum *)edit->GetDataField())->Set(settings.livetrack24.server);
+  ((DataFieldEnum *)edit->GetDataField())->Set(settings.server);
   edit->RefreshDisplay();
 
-  AddText(_("Username"), _T(""), settings.livetrack24.username);
-  AddPassword(_("Password"), _T(""), settings.livetrack24.password);
+  AddText(_("Username"), _T(""), settings.username);
+  AddPassword(_("Password"), _T(""), settings.password);
 
-  SetLiveTrack24Enabled(settings.livetrack24.enabled);
+  SetLiveTrack24Enabled(settings.enabled);
 }
 
 bool
@@ -141,27 +141,27 @@ Livetrack24ConfigPanel::Save(bool &_changed)
 {
   bool changed = false;
 
-  TrackingSettings &settings =
-    CommonInterface::SetComputerSettings().tracking;
+  LiveTrack24::Settings &settings =
+    CommonInterface::SetComputerSettings().tracking.livetrack24;
 
-  changed |= SaveValue(LT24_INVERVAL, ProfileKeys::LiveTrack24TrackingInterval, settings.livetrack24.interval);
+  changed |= SaveValue(LT24_INVERVAL, ProfileKeys::LiveTrack24TrackingInterval, settings.interval);
 
   changed |= SaveValueEnum(LT24_VEHICLE_TYPE, ProfileKeys::LiveTrack24TrackingVehicleType,
-                           settings.livetrack24.vehicleType);
+                           settings.vehicleType);
 
   changed |= SaveValue(LT24_VEHICLE_NAME, ProfileKeys::LiveTrack24TrackingVehicleName,
-                       settings.livetrack24.vehicle_name);
+                       settings.vehicle_name);
 
-  changed |= SaveValue(LT24_ENABLED, ProfileKeys::LiveTrack24Enabled, settings.livetrack24.enabled);
+  changed |= SaveValue(LT24_ENABLED, ProfileKeys::LiveTrack24Enabled, settings.enabled);
 
   changed |= SaveValue(LT24_SERVER, ProfileKeys::LiveTrack24Server,
-                       settings.livetrack24.server);
+                       settings.server);
 
   changed |= SaveValue(LT24_USERNAME, ProfileKeys::LiveTrack24Username,
-                       settings.livetrack24.username);
+                       settings.username);
 
   changed |= SaveValue(LT24_PASSWORD, ProfileKeys::LiveTrack24Password,
-                       settings.livetrack24.password);
+                       settings.password);
 
   _changed |= changed;
 

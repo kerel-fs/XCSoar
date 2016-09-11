@@ -73,13 +73,32 @@ TwoWidgets::CalculateSplit(const PixelRect &rc) const
 {
   const PixelSize min_a = first->GetMinimumSize();
   const PixelSize min_b = second->GetMinimumSize();
+  const PixelSize max_a = first->GetMaximumSize();
   const PixelSize max_b = second->GetMaximumSize();
 
-  return vertical
-    ? ::CalculateSplit(rc.top, rc.bottom, min_a.cy,
-                       min_b.cy, max_b.cy)
-    : ::CalculateSplit(rc.left, rc.right, min_a.cx,
-                       min_b.cx, max_b.cx);
+  if (vertical) {
+    switch (align) {
+      case Alignment::BOTTOM:
+        return ::CalculateSplit(rc.top, rc.bottom, min_a.cy,
+                                min_b.cy, max_b.cy);
+        break;
+      case Alignment::TOP:
+        return - ::CalculateSplit(-rc.bottom, -rc.top, min_b.cy,
+                                  min_a.cy, max_a.cy);
+        break;
+    }
+  } else {
+    switch (align) {
+      case Alignment::BOTTOM:
+        return ::CalculateSplit(rc.left, rc.right, min_a.cx,
+                                min_b.cx, max_b.cx);
+        break;
+      case Alignment::TOP:
+        return - ::CalculateSplit(-rc.right, rc.left, min_b.cx,
+                                  min_a.cx, max_a.cx);
+        break;
+    }
+  }
 }
 
 std::pair<PixelRect,PixelRect>

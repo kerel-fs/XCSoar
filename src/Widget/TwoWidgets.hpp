@@ -30,6 +30,11 @@ Copyright_License {
 #include <utility>
 #include <assert.h>
 
+enum class Alignment : bool {
+  TOP,
+  BOTTOM,
+};
+
 /**
  * A #Widget that contains two other widgets, the second one following
  * below the first one.  The two #Widget pointers are deleted in the
@@ -40,16 +45,17 @@ Copyright_License {
  */
 class TwoWidgets : public NullWidget {
   const bool vertical;
+  const Alignment align;
 
   Widget *first, *second;
 
   PixelRect rc;
 
 public:
-  TwoWidgets(bool _vertical=true):vertical(_vertical) {}
+  TwoWidgets(bool _vertical=true, Alignment _align=Alignment::BOTTOM):vertical(_vertical), align(_align) {}
 
-  TwoWidgets(Widget *_first, Widget *_second, bool _vertical=true)
-    :vertical(_vertical), first(_first), second(_second) {
+  TwoWidgets(Widget *_first, Widget *_second, bool _vertical=true, Alignment _align=Alignment::BOTTOM)
+    :vertical(_vertical), align(_align), first(_first), second(_second) {
     assert(first != nullptr);
     assert(second != nullptr);
   }

@@ -106,6 +106,8 @@ DIALOG_SOURCES = \
 	$(SRC)/Dialogs/Settings/Panels/UnitsConfigPanel.cpp \
 	$(SRC)/Dialogs/Settings/Panels/TimeConfigPanel.cpp \
 	$(SRC)/Dialogs/Settings/Panels/WaypointDisplayConfigPanel.cpp \
+	$(SRC)/Dialogs/Settings/Panels/SkyLinesConfigPanel.cpp \
+	$(SRC)/Dialogs/Settings/Panels/Livetrack24ConfigPanel.cpp \
 	$(SRC)/Dialogs/Settings/Panels/TrackingConfigPanel.cpp \
 	$(SRC)/Dialogs/Settings/Panels/CloudConfigPanel.cpp \
 	$(SRC)/Dialogs/Settings/Panels/WeatherConfigPanel.cpp \

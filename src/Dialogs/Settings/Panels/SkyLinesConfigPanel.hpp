@@ -21,16 +21,12 @@ Copyright_License {
 }
 */
 
-#include "TrackingConfigPanel.hpp"
-#include "SkyLinesConfigPanel.hpp"
-#include "Livetrack24ConfigPanel.hpp"
-#include "Widget/TwoWidgets.hpp"
+#ifndef SKYLINES_CONFIGPANEL_HPP
+#define SKYLINES_CONFIGPANEL_HPP
+
+class Widget;
 
 Widget *
-CreateTrackingConfigPanel()
-{
-    Widget *skylines = CreateSkyLinesConfigPanel();
-    Widget *livetrack24 = CreateLivetrack24ConfigPanel();
+CreateSkyLinesConfigPanel();
 
-    return new TwoWidgets(skylines, livetrack24, true, Alignment::TOP);
-}
+#endif /* SKYLINES_CONFIGPANEL_HPP */

@@ -38,10 +38,9 @@ Copyright_License {
 #include "Util/NumberParser.hpp"
 
 enum ControlIndex {
-#if defined(HAVE_SKYLINES_TRACKING) && defined(HAVE_LIVETRACK24)
+#if defined(HAVE_SKYLINES_TRACKING)
   SPACER,
 #endif
-#ifdef HAVE_LIVETRACK24
   LT24_ENABLED,
   LT24_INVERVAL,
   LT24_VEHICLE_TYPE,
@@ -49,7 +48,6 @@ enum ControlIndex {
   LT24_SERVER,
   LT24_USERNAME,
   LT24_PASSWORD
-#endif
 };
 
 class Livetrack24ConfigPanel final
@@ -59,9 +57,7 @@ public:
     :RowFormWidget(UIGlobals::GetDialogLook()) {}
 
 public:
-#ifdef HAVE_LIVETRACK24
   void SetLiveTrack24Enabled(bool enabled);
-#endif
 
   /* methods from Widget */
   virtual void Prepare(ContainerWindow &parent, const PixelRect &rc) override;
@@ -71,8 +67,6 @@ private:
   /* methods from DataFieldListener */
   virtual void OnModified(DataField &df) override;
 };
-
-#ifdef HAVE_LIVETRACK24
 
 void
 Livetrack24ConfigPanel::SetLiveTrack24Enabled(bool enabled)
@@ -85,20 +79,14 @@ Livetrack24ConfigPanel::SetLiveTrack24Enabled(bool enabled)
   SetRowEnabled(LT24_PASSWORD, enabled);
 }
 
-#endif
-
 void
 Livetrack24ConfigPanel::OnModified(DataField &df)
 {
-#ifdef HAVE_LIVETRACK24
   if (IsDataField(LT24_ENABLED, df)) {
     const DataFieldBoolean &dfb = (const DataFieldBoolean &)df;
     SetLiveTrack24Enabled(dfb.GetAsBoolean());
   }
-#endif
 }
-
-#ifdef HAVE_LIVETRACK24
 
 static constexpr StaticEnumChoice server_list[] = {
   { 0, _T("www.livetrack24.com") },
@@ -117,8 +105,6 @@ static constexpr StaticEnumChoice vehicle_type_list[] = {
   { 0 },
 };
 
-#endif
-
 void
 Livetrack24ConfigPanel::Prepare(ContainerWindow &parent, const PixelRect &rc)
 {
@@ -127,11 +113,10 @@ Livetrack24ConfigPanel::Prepare(ContainerWindow &parent, const PixelRect &rc)
 
   RowFormWidget::Prepare(parent, rc);
 
-#if defined(HAVE_SKYLINES_TRACKING) && defined(HAVE_LIVETRACK24)
+#if defined(HAVE_SKYLINES_TRACKING)
   AddSpacer();
 #endif
 
-#ifdef HAVE_LIVETRACK24
   AddBoolean(_T("LiveTrack24"),  _T(""), settings.livetrack24.enabled, this);
 
   AddTime(_("Tracking Interval"), _T(""), 5, 3600, 5, settings.livetrack24.interval);
@@ -147,11 +132,8 @@ Livetrack24ConfigPanel::Prepare(ContainerWindow &parent, const PixelRect &rc)
 
   AddText(_("Username"), _T(""), settings.livetrack24.username);
   AddPassword(_("Password"), _T(""), settings.livetrack24.password);
-#endif
 
-#ifdef HAVE_LIVETRACK24
   SetLiveTrack24Enabled(settings.livetrack24.enabled);
-#endif
 }
 
 bool
@@ -162,7 +144,6 @@ Livetrack24ConfigPanel::Save(bool &_changed)
   TrackingSettings &settings =
     CommonInterface::SetComputerSettings().tracking;
 
-#ifdef HAVE_LIVETRACK24
   changed |= SaveValue(LT24_INVERVAL, ProfileKeys::LiveTrack24TrackingInterval, settings.livetrack24.interval);
 
   changed |= SaveValueEnum(LT24_VEHICLE_TYPE, ProfileKeys::LiveTrack24TrackingVehicleType,
@@ -170,9 +151,7 @@ Livetrack24ConfigPanel::Save(bool &_changed)
 
   changed |= SaveValue(LT24_VEHICLE_NAME, ProfileKeys::LiveTrack24TrackingVehicleName,
                        settings.livetrack24.vehicle_name);
-#endif
 
-#ifdef HAVE_LIVETRACK24
   changed |= SaveValue(LT24_ENABLED, ProfileKeys::LiveTrack24Enabled, settings.livetrack24.enabled);
 
   changed |= SaveValue(LT24_SERVER, ProfileKeys::LiveTrack24Server,
@@ -183,7 +162,6 @@ Livetrack24ConfigPanel::Save(bool &_changed)
 
   changed |= SaveValue(LT24_PASSWORD, ProfileKeys::LiveTrack24Password,
                        settings.livetrack24.password);
-#endif
 
   _changed |= changed;
 
